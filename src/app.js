@@ -79,13 +79,30 @@ app.post("/signin", async (req, res) => {
 					token
 				})
 
-            return res.send(token);
+            return res.send({token, name:participantExists.name});
         }else{
             return res.status(401).send("Participant dont exists")
         }
     } catch (error) {
         res.status(500).send(error.message)
     }
+})
+
+app.get("/transactions", async (req, res) => {
+    const { authorization } = req.headers
+    const token = authorization?.replace("Bearer ", "")
+
+    if(!token) res.sendStatus(401)
+
+    const sessionsCollection = db.collection("sessions")
+    const sessionExists = await sessionsCollection.findOne({token})
+
+    if(!sessionExists) res.sendStatus(401)
+
+    const transactionsCollection = db.collection("transactions")
+    const userTransactions = await transactionsCollection.find({userId: sessionExists.userId}).toArray()
+    
+    res.send(userTransactions)
 })
 
 app.listen(5000, ()=>{
