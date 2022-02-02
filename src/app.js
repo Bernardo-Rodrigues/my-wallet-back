@@ -105,6 +105,37 @@ app.get("/transactions", async (req, res) => {
     res.send(userTransactions)
 })
 
+app.post("/transactions", async (req, res) => {
+    const { authorization } = req.headers
+    const token = authorization?.replace("Bearer ", "")
+    const transaction = req.body
+
+    if(!token) res.sendStatus(401)
+
+    const sessionsCollection = db.collection("sessions")
+    const sessionExists = await sessionsCollection.findOne({token})
+
+    if(!sessionExists) res.sendStatus(401)
+
+    const transactionSchema = joi.object({
+        value: joi.number().required(),
+        desc: joi.string().required(),
+        type: joi.string().valid("entry", "output")
+    });
+    
+    const validation = transactionSchema.validate(transaction, { abortEarly: false })
+    
+    if(validation.error){
+        res.status(422).send(validation.error.message)
+        return
+    }
+
+    const transactionsCollection = db.collection("transactions")
+    await transactionsCollection.insertOne({...transaction, userId:sessionExists.userId})
+
+    res.send({...transaction, userId:sessionExists.userId})
+})
+
 app.listen(5000, ()=>{
     console.log("Server listening on Port 5000")
 }) 
