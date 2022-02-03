@@ -1,7 +1,7 @@
 import express, {json} from "express"
 import cors from "cors"
 import { signIn, signUp } from "./controllers/authController.js"
-import { deleteTransaction, getUserTransactions, postNewTransaction } from "./controllers/transactionsController.js"
+import { deleteTransaction, getUserTransactions, postNewTransaction, updateTransaction } from "./controllers/transactionsController.js"
 
 const app = express()
 app.use(cors())
@@ -16,6 +16,8 @@ app.get("/transactions", getUserTransactions)
 app.post("/transactions", postNewTransaction)
 
 app.delete("/transactions/:id", deleteTransaction)
+
+app.put("/transactions/:id", updateTransaction)
 
 app.listen(5000, ()=>{
     console.log("Server listening on Port 5000")

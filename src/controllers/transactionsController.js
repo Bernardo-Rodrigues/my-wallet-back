@@ -67,5 +67,34 @@ export async function deleteTransaction(req, res) {
     } catch (error) {
         res.status(500).send(error.message)
     }
+}
 
+export async function updateTransaction(req, res) {
+    const token = req.headers.authorization?.replace("Bearer ", "")
+    const { id } = req.params
+    const editTransaction = req.body
+
+    try {
+        const session = await validToken(token)
+        if(!session) return res.sendStatus(401)
+        
+        const transaction = await db.collection("transactions").findOne({_id: new ObjectId(id)})
+        if(!transaction) return res.status(404).send("Transaction not found")
+
+        if(session.userId.toString() !== transaction.userId.toString()) return res.status(401).send("This transaction is not yours")
+        
+        const validation = transactionSchema.validate(editTransaction, { abortEarly: false })
+        if(validation.error) return res.status(422).send(validation.error.message)
+        if(!/\,[0-9]{2}$/.test(editTransaction.value)) editTransaction.value += ",00"
+        
+        await db.collection("transactions").updateOne({
+            _id: new ObjectId(id)
+        },{
+            $set: editTransaction
+        })
+
+        return res.sendStatus(200)
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
 }
