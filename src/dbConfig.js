@@ -3,6 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const mongoClient = await new MongoClient(process.env.MONGO_URI).connect();
-const db = mongoClient.db("oscar-niemeyer");
+const db = mongoClient.db("api-my-wallet");
 
 export default db;
