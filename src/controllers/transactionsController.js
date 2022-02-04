@@ -1,21 +1,16 @@
 import dayjs from "dayjs"
-import db from '../dbConfig.js'
-import { ObjectId } from 'bson'
-import validToken from '../utils/validToken.js'
-import { transactionSchema } from '../utils/joiValidations.js'
+import db from '../db.js'
+import { ObjectId } from 'mongodb';
 
-export async function getUserTransactions(req, res) {
-    const token = req.headers.authorization?.replace("Bearer ", "")
+export async function getTransactions(req, res) {
     let balance = 0
+    const { session } = res.locals
 
     try {
-        const session = await validToken(token)
-        if(!session) return res.sendStatus(401)
-
         const userTransactions = await db.collection("transactions").find({userId: session.userId}).toArray()
     
         userTransactions.forEach( transaction => {
-            const parseTransaction = parseFloat(transaction.value.replace(",","."))
+            const parseTransaction = parseFloat(transaction.value)
             delete transaction.userId
     
             if(transaction.type === "entry") balance += parseTransaction
@@ -29,16 +24,11 @@ export async function getUserTransactions(req, res) {
     }
 }
 
-export async function postNewTransaction(req, res) {
-    const token = req.headers.authorization?.replace("Bearer ", "")
+export async function postTransaction(req, res) {
     const transaction = req.body
+    const { session } = res.locals
     
     try {
-        const session =  await validToken(token)
-        if(!session) return res.sendStatus(401)
-        
-        const validation = transactionSchema.validate(transaction, { abortEarly: false })
-        if(validation.error) return res.status(422).send(validation.error.message)
         if(!/\,[0-9]{2}$/.test(transaction.value)) transaction.value += ",00"
     
         await db.collection("transactions").insertOne({...transaction, date:dayjs().format("DD/MM"), userId:session.userId})
@@ -50,13 +40,10 @@ export async function postNewTransaction(req, res) {
 }
 
 export async function deleteTransaction(req, res) {
-    const token = req.headers.authorization?.replace("Bearer ", "")
     const { id } = req.params
+    const { session } = res.locals
 
     try {
-        const session =  await validToken(token)
-        if(!session) return res.sendStatus(401)
-
         const transaction = await db.collection("transactions").findOne({_id: new ObjectId(id)})
         if(!transaction) return res.status(404).send("Transaction not found")
 
@@ -70,22 +57,17 @@ export async function deleteTransaction(req, res) {
 }
 
 export async function updateTransaction(req, res) {
-    const token = req.headers.authorization?.replace("Bearer ", "")
     const { id } = req.params
     const editTransaction = req.body
+    const { session } = res.locals
 
     try {
-        const session = await validToken(token)
-        if(!session) return res.sendStatus(401)
-        
         const transaction = await db.collection("transactions").findOne({_id: new ObjectId(id)})
         if(!transaction) return res.status(404).send("Transaction not found")
 
         if(session.userId.toString() !== transaction.userId.toString()) return res.status(401).send("This transaction is not yours")
         
-        const validation = transactionSchema.validate(editTransaction, { abortEarly: false })
-        if(validation.error) return res.status(422).send(validation.error.message)
-        if(!/\,[0-9]{2}$/.test(editTransaction.value)) editTransaction.value += ",00"
+        if(!/\.[0-9]{2}$/.test(editTransaction.value)) editTransaction.value += ",00"
         
         await db.collection("transactions").updateOne({
             _id: new ObjectId(id)
