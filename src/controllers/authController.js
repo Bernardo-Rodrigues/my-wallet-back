@@ -21,16 +21,20 @@ export async function signIn(req, res) {
     
     try {
         const participant = await db.collection("users").findOne({email:user.email})
-
-        if(participant && bcrypt.compareSync(user.password, participant.password)){
-            const token = tokenGenerator();
+        const session = await db.collection("sessions").findOne({userId: participant._id})
         
-            await db.collection("sessions").insertOne({
-                userId: participant._id,
-                token
-            })
-            
-            return res.status(200).send({token, username:participant.username});
+        if(participant && bcrypt.compareSync(user.password, participant.password)){
+            if(!session){
+                const token = tokenGenerator();
+                
+                await db.collection("sessions").insertOne({
+                    userId: participant._id,
+                    token
+                })
+                return res.status(200).send({token, username:participant.username});
+            }
+            console.log(session)
+            return res.status(200).send({token:session.token, username:participant.username});
         }else{
             return res.status(401).send("Participant dont exists")
         }
