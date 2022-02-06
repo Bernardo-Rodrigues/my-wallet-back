@@ -29,7 +29,7 @@ export async function postTransaction(req, res) {
     const { session } = res.locals
     
     try {
-        if(!/\,[0-9]{2}$/.test(transaction.value)) transaction.value += ",00"
+        if(!/\.[0-9]{2}$/.test(transaction.value)) transaction.value += ",00"
     
         await db.collection("transactions").insertOne({...transaction, date:dayjs().format("DD/MM"), userId:session.userId})
     
@@ -67,7 +67,7 @@ export async function updateTransaction(req, res) {
 
         if(session.userId.toString() !== transaction.userId.toString()) return res.status(401).send("This transaction is not yours")
         
-        if(!/\.[0-9]{2}$/.test(editTransaction.value)) editTransaction.value += ",00"
+        if(!/\.[0-9]{2}$/.test(editTransaction.value)) editTransaction.value = parseFloat(editTransaction.value).toFixed(2)
         
         await db.collection("transactions").updateOne({
             _id: new ObjectId(id)
