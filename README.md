@@ -8,7 +8,7 @@ My first full stack application with the concept of a personal wallet that allow
 
 Try it out now at https://my-wallet-front-pearl.vercel.app
 <br/>
-Link to the frontend repository: https://github.com/Bernardo-Rodrigues/my-wallet-front
+Link to the backend repository: https://github.com/Bernardo-Rodrigues/my-wallet-back
 
 ## About
 
