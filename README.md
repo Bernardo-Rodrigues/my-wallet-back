@@ -1,32 +1,32 @@
 # MyWallet
 
-My first full stack application with the concept of a personal wallet that allows you to create a personal account to keep track of your entire statement by adding incoming and outgoing transactions, as well as calculating the total balance and being able to edit and delete old transactions.
+Meu primeiro aplicativo full stack com o conceito de carteira pessoal que permite criar uma conta pessoal para acompanhar todo o seu extrato adicionando transações de entrada e saída, além de calcular o saldo total e poder editar e excluir transações antigas.
 
 <div align='center'>
   <img style='ustify-content: center' src='/src/gif/MyWallet.gif' />
 </div>
 
-Try it out now at https://my-wallet-front-pearl.vercel.app
+Experimente agora em https://my-wallet-front-pearl.vercel.app
 <br/>
-Link to the frontend repository: https://github.com/Bernardo-Rodrigues/my-wallet-front
+Link para o repositótio do front-end: https://github.com/Bernardo-Rodrigues/my-wallet-front
 
-## About
+## Sobre
 
-The main features of this application are:
+As principais funcionalidades deste aplicativo são:
 
-- Create a personal account
-- See your entire statement
-- Add incoming and outgoing transactions
-- Edit and delete transactions
-- See your total balance
+- Crie uma conta pessoal
+- Veja todo o seu extrato
+- Adicionar transações de entrada e saída
+- Editar e excluir transações
+- Veja seu saldo total
 
-## Why?
+## Por quê?
 
-This application was created to develop my first full stack web application, putting into practice my learnings from the mongoDB database in addition to using new tools such as sweetalerts, uuid session tokens and password encryption with bcryt.
+Esta aplicação foi criada para desenvolver minha primeira aplicação web full stack, colocando em prática meus aprendizados do banco de dados mongoDB além de utilizar novas ferramentas como sweetalerts, tokens de sessão uuid e criptografia de senhas com bcryt.
 
-## Technologies
+## Tecnologias
 
-The following tools and frameworks were used in the construction of the project:<br>
+As seguintes ferramentas e frameworks foram usados na construção do projeto:<br>
 
   ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
   ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
@@ -38,22 +38,18 @@ The following tools and frameworks were used in the construction of the project:
   ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
   ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
-## How to run
+## Como rodar
 
-1. Clone this repository
+1. Clone o repositório
 
-2. Install dependencies
+2. Instale as dependências
 ```bash
 npm i
 ```
 
-3. Run the application with
+3. Rode a aplicação com
 ```bash
 npm start
 ```
 
-4. You can optionally build the project running
-```bash
-npm run build
-```
-5. Finally, access http://localhost:3000 on your favorite browser
+4. Por fim, acesse http://localhost:3000 no seu navegador preferido
